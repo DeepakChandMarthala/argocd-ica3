@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-wordpress
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.wordpress.service.type }}
+  ports:
+  - port: {{ .Values.wordpress.service.port }}
+    targetPort: {{ .Values.wordpress.service.port }}
+  selector:
+    app: wordpress
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mariadb
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.mariadb.service.type }}
+  ports:
+  - port: {{ .Values.mariadb.service.port }}
+    targetPort: {{ .Values.mariadb.service.port }}
+  selector:
+    app: mariadb
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-nginx
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.nginx.service.type }}
+  ports:
+  - port: {{ .Values.nginx.service.port }}
+    targetPort: {{ .Values.nginx.service.port }}
+  selector:
+    app: nginx

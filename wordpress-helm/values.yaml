@@ -1,0 +1,33 @@
+replicaCount: 1
+namespace: wordpress-namespace
+
+wordpress:
+  image:
+    repository: wordpress
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+
+mariadb:
+  image:
+    repository: mariadb
+    tag: 10.6.4-focal
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3306
+  credentials:
+    rootPassword: root_password
+    database: wordpress
+    username: wp_user
+    password: wp_password
+
+nginx:
+  image:
+    repository: deepakchandmarthala/ica-2:nginx-proxy
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 80

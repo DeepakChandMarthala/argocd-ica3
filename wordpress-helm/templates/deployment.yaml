@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-wordpress
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: "{{ .Values.wordpress.image.repository }}:{{ .Values.wordpress.image.tag }}"
+        imagePullPolicy: {{ .Values.wordpress.image.pullPolicy }}
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: {{ .Release.Name }}-mariadb:{{ .Values.mariadb.service.port }}
+        - name: WORDPRESS_DB_USER
+          value: {{ .Values.mariadb.credentials.username }}
+        - name: WORDPRESS_DB_PASSWORD
+          value: {{ .Values.mariadb.credentials.password }}
+        - name: WORDPRESS_DB_NAME
+          value: {{ .Values.mariadb.credentials.database }}
+        ports:
+        - containerPort: {{ .Values.wordpress.service.port }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mariadb
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: "{{ .Values.mariadb.image.repository }}:{{ .Values.mariadb.image.tag }}"
+        imagePullPolicy: {{ .Values.mariadb.image.pullPolicy }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.mariadb.credentials.rootPassword }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mariadb.credentials.database }}
+        - name: MYSQL_USER
+          value: {{ .Values.mariadb.credentials.username }}
+        - name: MYSQL_PASSWORD
+          value: {{ .Values.mariadb.credentials.password }}
+        ports:
+        - containerPort: {{ .Values.mariadb.service.port }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nginx
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.nginx.service.port }}
