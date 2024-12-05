@@ -26,7 +26,7 @@ mariadb:
 
 nginx:
   image:
-    repository: deepakchandmarthala/ica-2:nginx-proxy
+    repository: deepakchandmarthala/ica-2/nginx-proxy
     tag: latest
   service:
     type: LoadBalancer
